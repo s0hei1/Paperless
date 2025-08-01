@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import ClassVar
-
+from abc import ABC
 
 @dataclass()
 class ApiRoute:
@@ -15,7 +15,7 @@ class ApiRoute:
         if '_' in self.path:
             raise ValueError("Path cannot contain underscore")
         if '_' in self.scope:
-            raise ValueError("Scope cannot contain underscore")
+            raise ValueError("Scope cannot contain underscore, check you define scope name for all scopes")
 
     @property
     def url(self) -> str:
@@ -28,26 +28,43 @@ class ApiRoute:
         return self.url
 
 
+class BaseScope(ABC):
+
+    scope_name : str = "_"
+
+
 class Routes:
 
-    class User:
-        create : ClassVar[ApiRoute] = ApiRoute(scope='user', path='create')
-        read_one : ClassVar[ApiRoute] = ApiRoute(scope='user', path='read-one')
-        read_many : ClassVar[ApiRoute] = ApiRoute(scope='user', path='read-many')
-        update : ClassVar[ApiRoute] = ApiRoute(scope='user', path='update')
-        delete : ClassVar[ApiRoute] = ApiRoute(scope='user', path='delete')
+    class User(BaseScope):
 
-    class Auth:
-        login : ClassVar[ApiRoute] = ApiRoute(scope='auth', path='login')
-        change_password : ClassVar[ApiRoute] = ApiRoute(scope='auth', path='change_password')
-        reset_password : ClassVar[ApiRoute] = ApiRoute(scope='auth', path='reset_password')
+        scope_name = "user"
 
-    class GoodsExit:
-        create : ClassVar[ApiRoute] = ApiRoute(scope='goods-exit', path='create')
-        read_one : ClassVar[ApiRoute] = ApiRoute(scope='goods-exit', path='read-one')
-        read_many : ClassVar[ApiRoute] = ApiRoute(scope='goods-exit', path='read-many')
-        update : ClassVar[ApiRoute] = ApiRoute(scope='goods-exit', path='update')
-        delete : ClassVar[ApiRoute] = ApiRoute(scope='goods-exit', path='delete')
+        create : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
+        read_one : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-one')
+        read_many : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-many')
+        update : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='update')
+        delete : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='delete')
 
+
+    class Auth(BaseScope):
+
+        scope_name = "auth"
+
+        login : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='login')
+        change_password : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='change-password')
+        reset_password : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='reset-password')
+
+    class GoodsExit(BaseScope):
+        scope_name = "goods-exit"
+        create : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
+        read_one : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-one')
+        read_many : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-many')
+        update : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='update')
+        delete : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='delete')
+
+
+
+class Test():
+    pass
 
 
