@@ -8,9 +8,10 @@ def create_user_request() -> dict:
     return {
         'first_name': f'maryam',
         'last_name': f'p',
-        'username': f'testuser_{any_int}',
-        'password' : 'test_password',
-        'user_roll' : 1
+        'user_name': f'testuser_{any_int}',
+        'password': 'test_password',
+        'user_roll' : 1,
+        "department_id" : 1,
     }
 
 @pytest.fixture()

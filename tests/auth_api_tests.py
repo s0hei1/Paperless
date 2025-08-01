@@ -13,13 +13,18 @@ async def test_success_login(
         app : FastAPI,
         async_client : AsyncClient,
         create_user_request: dict):
-    create_user =await async_client.post(Routes.User.create.url,data=create_user_request)
+    create_user =await async_client.post(Routes.User.create.url,json=create_user_request)
     create_user.raise_for_status()
 
-    login_response = await async_client.post(Routes.Auth.login.url , data=create_user.json())
+    login_request = {
+        "user_name" : create_user_request['user_name'],
+        "password" : create_user_request['password'],
+    }
+
+    login_response = await async_client.post(Routes.Auth.login.url , json=login_request)
     login_response.raise_for_status()
 
-    assert login_response.json().gey("token")
+    assert login_response.json().get("token")
 
 @pytest.mark.asyncio
 async def test_login_fails(
