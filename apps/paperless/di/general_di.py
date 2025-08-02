@@ -1,7 +1,4 @@
 from fastapi import FastAPI
-
-from apps.paperless.api.end_points.auth_api import auth_router
-from apps.paperless.api.end_points.user_api import user_router
 from apps.paperless.config import Settings
 
 class GeneralDI:
@@ -13,6 +10,8 @@ class GeneralDI:
 
     @classmethod
     def app(cls) -> FastAPI:
+        from apps.paperless.api.end_points.auth_api import auth_router
+        from apps.paperless.api.end_points.user_api import user_router
 
         fast_api_app = FastAPI()
 
@@ -20,3 +19,4 @@ class GeneralDI:
         fast_api_app.include_router(auth_router)
 
         return fast_api_app
+
