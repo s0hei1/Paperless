@@ -13,7 +13,7 @@ async def test_create_user(
     create_user = await async_client.post(Routes.User.create.url, json=create_user_request)
     create_user.raise_for_status()
 
-    assert all([i in  create_user.json() for i in ['user_name', 'first_name', 'last_name', 'user_roll', 'department_id']])
+    assert all([i in  create_user.json() for i in ['id','user_name', 'first_name', 'last_name', 'user_roll', 'department_id']])
 
 
 @pytest.mark.asyncio
@@ -24,10 +24,10 @@ async def test_read_one_user(
     create_user = await async_client.post(Routes.User.create.url, json=create_user_request)
     create_user.raise_for_status()
 
-    read_user = await async_client.get(Routes.User.read_one.url, params= {"id" : create_user["id"]})
+    read_user = await async_client.get(Routes.User.read_one.url, params= {"id" : create_user.json().get("id")})
     read_user.raise_for_status()
 
-    assert all([i in  create_user.json() for i in ['user_name', 'first_name', 'last_name', 'user_roll', 'department_id']])
+    assert all([i in  create_user.json() for i in ['id','user_name', 'first_name', 'last_name', 'user_roll', 'department_id']])
 
 @pytest.mark.asyncio
 async def test_read_many_users(
@@ -51,6 +51,10 @@ async def test_update_user(
     user['first_name'] = "Updated Maryam"
 
     update_user = await async_client.put(Routes.User.update.url, json=user)
+    update_user.raise_for_status()
+
+    assert update_user.json().get('first_name') == "Updated Maryam"
+    assert all([i in  create_user.json() for i in ['id','user_name', 'first_name', 'last_name', 'user_roll', 'department_id']])
 
 @pytest.mark.asyncio
 async def test_delete_user(
