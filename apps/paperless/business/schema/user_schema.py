@@ -1,28 +1,29 @@
 from pydantic import ConfigDict, BaseModel
 from apps.paperless.data.enums.user_rolls import UserRoll
-
+from apps.paperless.business.schema.fields import IdField, ShortStringField, PasswordField,UsernameField
 
 class UserCreate(BaseModel):
-    first_name: str
-    last_name: str
-    user_name: str
-    password: str
+    first_name: ShortStringField
+    last_name: ShortStringField
+    user_name: UsernameField
+    password: PasswordField
     user_roll: UserRoll
-    department_id: int
+    department_id: IdField
 
 
 class UserUpdate(BaseModel):
-    first_name: str | None = None
-    last_name: str | None = None
-    user_name: str | None = None
-    password: str | None = None
+    id : IdField
+    first_name: ShortStringField | None = None
+    last_name: ShortStringField | None = None
     user_roll: UserRoll | None = None
-    department_id: int | None = None
+    department_id: IdField | None = None
 
 class UserRead(BaseModel):
-    first_name: str
-    last_name: str
-    user_name: str
-    department_id: int
+    id : IdField
+    first_name: ShortStringField
+    last_name: ShortStringField
+    user_name: UsernameField
+    department_id: IdField
     user_roll: UserRoll
+
     model_config = ConfigDict(from_attributes=True)
