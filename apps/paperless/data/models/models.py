@@ -8,7 +8,7 @@ from apps.paperless.data.enums.user_rolls import UserRoll
 
 SQLAlchemyModel = declarative_base()
 
-class Departments(SQLAlchemyModel):
+class Department(SQLAlchemyModel):
     __tablename__ = 'departments'
     id = Column(Integer, primary_key=True)
     name = Column(String(128), nullable=False)
@@ -27,7 +27,7 @@ class User(SQLAlchemyModel):
 
     department_id = Column(ForeignKey('departments.id'), nullable=False)
 
-    department = relationship('Departments', back_populates='users')
+    department = relationship('Department', back_populates='users')
     approvals = relationship('ApprovalUser', back_populates='user' )
     goods_exit_approvals = relationship("GoodsExitApproval", back_populates="user")
 

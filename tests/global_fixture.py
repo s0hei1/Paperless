@@ -2,12 +2,12 @@ import pytest
 import pytest_asyncio
 from fastapi import FastAPI
 from httpx import AsyncClient, ASGITransport
-from apps.paperless.di.general_di import _GeneralDI
+from apps.paperless.main import app as application
 
 
 @pytest.fixture
 def app() -> FastAPI:
-    return _GeneralDI.app()
+    return application
 
 
 @pytest_asyncio.fixture
