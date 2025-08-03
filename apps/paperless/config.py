@@ -6,5 +6,5 @@ class Settings(BaseSettings):
     development_db : str = ''
 
     class Config:
-        env_file = 'apps/paperless/.env'
+        env_file = r'C:\Users\m.rahimi\PycharmProjects\Papaerless\apps\paperless\.env'
 

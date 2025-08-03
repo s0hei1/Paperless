@@ -50,7 +50,7 @@ async def test_update_user(
 
     user['first_name'] = "Updated Maryam"
 
-    update_user = await async_client.put(Routes.User.update.url, json=user)
+    update_user = await async_client.put(Routes.User.update.url, json=user, params={"id" : create_user.json().get("id")})
     update_user.raise_for_status()
 
     assert update_user.json().get('first_name') == "Updated Maryam"

@@ -1,14 +1,13 @@
 from fastapi import APIRouter, Depends
-from sqlalchemy.util import await_only
-
+from fastapi.params import Query
 from apps.paperless.api.route_path.route_path import Routes
 from apps.paperless.business.schema.comon_response import DeleteSchema
+from apps.paperless.business.schema.fields import IdField
 from apps.paperless.business.schema.user_schema import UserCreate, UserRead, UserUpdate
 from apps.paperless.data.repository.user_repository import UserRepository
 from apps.paperless.di.repository_di import RepositoryDI
 
 user_router = APIRouter(tags=[Routes.User.scope_name])
-
 
 @user_router.post(path=Routes.User.create.url, response_model=UserRead)
 async def create_user(
@@ -20,43 +19,35 @@ async def create_user(
 
     return user
 
-
 @user_router.get(path=Routes.User.read_one.url, response_model=UserRead)
-async def read_one_user(id: int):
-    return {
-        "id": 1,
-        "first_name": "test",
-        "last_name": "test",
-        "user_name": "test",
-        "department_id": 1,
-        "user_roll": 1,
-    }
+async def read_one_user(
+        id: int,
+        user_repository: UserRepository = Depends(RepositoryDI.user_repository)
+):
+    user = await user_repository.read_one(id)
+    return user
+
 
 @user_router.get(path=Routes.User.read_many.url, response_model=list[UserRead])
-async def read_one_user():
-    return [{
-        "id": 1,
-        "first_name": "test",
-        "last_name": "test",
-        "user_name": "test",
-        "department_id": 1,
-        "user_roll": 1,
-    }]
+async def read_many_users(
+        user_repository: UserRepository = Depends(RepositoryDI.user_repository)
+):
+    return await user_repository.read_many()
 
 @user_router.put(path=Routes.User.update.url, response_model=UserRead)
-async def update_user(user: UserUpdate):
-    return {
-        "id": 1,
-        "first_name": "Updated Maryam",
-        "last_name": "test",
-        "user_name": "test",
-        "department_id": 1,
-        "user_roll": 1,
-    }
+async def update_user(
+        user_update: UserUpdate,
+        id : IdField = Query,
+        user_repository: UserRepository = Depends(RepositoryDI.user_repository)
+):
+    updated_user = await user_repository.update_user(id = id, **user_update.to_t_value_dict())
+    return updated_user
+
 
 @user_router.delete(path=Routes.User.delete.url, response_model=DeleteSchema)
-async def delete_user(id: int):
-    return {
-        "id": 1,
-        "message": "Delete was successful",
-    }
+async def delete_user(
+        id: int,
+        user_repository: UserRepository = Depends(RepositoryDI.user_repository)
+):
+    user = await user_repository.delete(id)
+    return user
