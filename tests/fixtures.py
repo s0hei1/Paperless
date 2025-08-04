@@ -20,3 +20,10 @@ def fake_fail_login_request() -> dict:
         'username': 'testuser',
         'password' : 'wrong_password'
     }
+
+@pytest.fixture()
+def fake_department_create_request():
+    return {
+        "name" : "Test Department",
+        "code" : 333
+    }

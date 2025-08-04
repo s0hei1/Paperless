@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+
+from apps.paperless.api.end_points.department_api import department_router
 from apps.paperless.config import Settings
 
 class GeneralDI:
@@ -17,6 +19,9 @@ class GeneralDI:
 
         fast_api_app.include_router(user_router)
         fast_api_app.include_router(auth_router)
+        fast_api_app.include_router(department_router)
 
         return fast_api_app
+
+
 

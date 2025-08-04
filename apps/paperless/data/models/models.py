@@ -11,8 +11,8 @@ SQLAlchemyModel = declarative_base()
 class Department(SQLAlchemyModel):
     __tablename__ = 'departments'
     id = Column(Integer, primary_key=True)
-    name = Column(String(128), nullable=False)
-    code = Column(Integer, nullable=False)
+    name = Column(String(128), nullable=False, unique=True)
+    code = Column(Integer, nullable=False, unique=True)
 
     users = relationship('User', back_populates='department')
 
@@ -37,7 +37,6 @@ class ApprovalUser(SQLAlchemyModel):
     approval_process = Column(Enum(PaperlessProcess), nullable=False)
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-
     user = relationship('User', back_populates='approvals')
 
 class GoodsExitApproval(SQLAlchemyModel):
