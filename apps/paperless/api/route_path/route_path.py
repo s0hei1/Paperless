@@ -62,9 +62,13 @@ class Routes:
         update : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='update')
         delete : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='delete')
 
+    class Department(BaseScope):
+        scope_name = "department"
+        create: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
+        read_one: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-one')
+        read_many: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-many')
+        update: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='update')
+        delete: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='delete')
 
-
-class Test():
-    pass
 
 
