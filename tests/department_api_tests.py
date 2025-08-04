@@ -2,14 +2,14 @@ import pytest
 from httpx import AsyncClient
 from apps.paperless.api.route_path.route_path import Routes
 from global_fixture import app, async_client
-from fixtures import create_user_request
+from fixtures import fake_department_create_request
 
 @pytest.mark.asyncio
 async def test_create_department(
         async_client: AsyncClient,
-        create_department_request: dict
+        fake_department_create_request: dict
 ):
-    response = await async_client.post(Routes.Department.create.url, json=create_department_request)
+    response = await async_client.post(Routes.Department.create.url, json=fake_department_create_request)
     response.raise_for_status()
 
     data = response.json()
@@ -19,10 +19,10 @@ async def test_create_department(
 @pytest.mark.asyncio
 async def test_read_one_department(
         async_client: AsyncClient,
-        create_department_request: dict
+        fake_department_create_request: dict
 ):
     # Create a department first
-    create_response = await async_client.post(Routes.Department.create.url, json=create_department_request)
+    create_response = await async_client.post(Routes.Department.create.url, json=fake_department_create_request)
     create_response.raise_for_status()
     department_id = create_response.json().get("id")
 
@@ -51,10 +51,10 @@ async def test_read_many_departments(
 @pytest.mark.asyncio
 async def test_update_department(
         async_client: AsyncClient,
-        create_department_request: dict
+        fake_department_create_request: dict
 ):
     # Create
-    create_response = await async_client.post(Routes.Department.create.url, json=create_department_request)
+    create_response = await async_client.post(Routes.Department.create.url, json=fake_department_create_request)
     create_response.raise_for_status()
     department = create_response.json()
 
@@ -71,10 +71,10 @@ async def test_update_department(
 @pytest.mark.asyncio
 async def test_delete_department(
         async_client: AsyncClient,
-        create_department_request: dict
+        fake_department_create_request: dict
 ):
     # Create
-    create_response = await async_client.post(Routes.Department.create.url, json=create_department_request)
+    create_response = await async_client.post(Routes.Department.create.url, json=fake_department_create_request)
     create_response.raise_for_status()
     department_id = create_response.json()["id"]
 
