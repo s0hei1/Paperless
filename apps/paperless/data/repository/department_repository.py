@@ -35,7 +35,7 @@ class DepartmentRepository:
         result = await self.db.execute(q)
         return result.scalars().all()
 
-    async def update_department(
+    async def update(
         self,
         id: int,
         name: TValue[str] | None = None,

@@ -21,12 +21,10 @@ async def test_read_one_department(
         async_client: AsyncClient,
         fake_department_create_request: dict
 ):
-    # Create a department first
     create_response = await async_client.post(Routes.Department.create.url, json=fake_department_create_request)
     create_response.raise_for_status()
     department_id = create_response.json().get("id")
 
-    # Read the department
     read_response = await async_client.get(Routes.Department.read_one.url, params={"id": department_id})
     read_response.raise_for_status()
 
