@@ -69,3 +69,4 @@ async def test_delete_user(
 
     assert response.json().get("id") == create_user.json().get("id")
     assert response.json().get("message")
+
