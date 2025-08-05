@@ -70,5 +70,10 @@ class Routes:
         update: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='update')
         delete: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='delete')
 
+    class GoodsExitDoc(BaseScope):
+        scope_name = "goods-exit-doc"
+        create : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
+
+
 
 

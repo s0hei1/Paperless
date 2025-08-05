@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Float
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Float, Boolean
 from sqlalchemy.orm import declarative_base, relationship
-from datetime import datetime,UTC
+from datetime import datetime, UTC
 from apps.paperless.data.enums.approval_status import ApprovalStatus
 from apps.paperless.data.enums.process import PaperlessProcess
 from apps.paperless.data.enums.unit_of_measure import UOMs
@@ -14,7 +14,7 @@ class Department(SQLAlchemyModel):
     name = Column(String(128), nullable=False, unique=True)
     code = Column(Integer, nullable=False, unique=True)
 
-    users = relationship('User', back_populates='department')
+    users = relationship('User', back_populates='department',foreign_keys = 'users.department_id')
 
 class User(SQLAlchemyModel):
     __tablename__ = 'users'
@@ -25,46 +25,46 @@ class User(SQLAlchemyModel):
     password = Column(String(128), nullable=False)
     user_roll = Column(Enum(UserRoll), nullable=False, default=UserRoll.PERSONNEL.value)
 
+    managed_department_id = Column(ForeignKey('departments.id'), nullable=True)
     department_id = Column(ForeignKey('departments.id'), nullable=False)
 
-    department = relationship('Department', back_populates='users')
-    approvals = relationship('ApprovalUser', back_populates='user' )
+    department = relationship('Department', backref='users', foreign_keys=[department_id],)
+    managed_department = relationship('Department', backref='manager_id', foreign_keys=[managed_department_id],uselist=False)
     goods_exit_approvals = relationship("GoodsExitApproval", back_populates="user")
-
-class ApprovalUser(SQLAlchemyModel):
-    __tablename__ = 'approval_users'
-    id = Column(Integer, primary_key=True)
-    approval_process = Column(Enum(PaperlessProcess), nullable=False)
-
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    user = relationship('User', back_populates='approvals')
 
 class GoodsExitApproval(SQLAlchemyModel):
     __tablename__ = 'approvals'
     id = Column(Integer, primary_key=True)
     status = Column(Enum(ApprovalStatus), nullable=False)
-
     user_id = Column(ForeignKey('users.id'), nullable=False)
     doc_id = Column(ForeignKey('goods_exit_docs.id'), nullable=False)
-
+    modification_date_time = Column(DateTime, default=datetime.now(UTC))
     user = relationship('User', back_populates='goods_exit_approvals')
-    doc = relationship('GoodsExitDoc', back_populates='approval')
+    doc = relationship('GoodsExitDoc', back_populates='approvals')
+
 
 class GoodsExitDoc(SQLAlchemyModel):
     __tablename__ = "goods_exit_docs"
     id = Column(Integer, primary_key=True)
-    doc_code = Column(String(128), nullable=False, unique=True)
-    creation_date_time = Column(DateTime, default= datetime.now(UTC))
-    sending_department_id  = Column(ForeignKey('departments.id'))
-    sending_department_name  = Column(String(128), nullable=False)
-    exit_reason  = Column(String(256), nullable=True)
-    destination  = Column(String(128), nullable=True)
-    address  = Column(String(512), nullable=True)
-    sending_user_fullname = Column(String(128), nullable=True)
+    doc_code = Column(String(8), nullable=False, unique=True)
+    creation_date_time = Column(DateTime, default=datetime.now(UTC))
+    sending_department_id = Column(ForeignKey('departments.id'))
+    sending_department_name = Column(String(128), nullable=False)
+    exit_reason = Column(String(256), nullable=False)
+    destination = Column(String(128), nullable=False)
+    address_ = Column(String(512), nullable=False)
+    sending_user_fullname = Column(String(128), nullable=False)
+    exit_for_ever = Column(Boolean, nullable=False)
+    receiver_name = Column(String(128), nullable=True)
+    status = Column(Enum(ApprovalStatus), nullable=False)
 
+    approval_status = Column(Enum(ApprovalStatus), nullable=False)
+    creator_user_id = Column(ForeignKey('users.id'))
+
+    approvals = relationship('GoodsExitApproval', back_populates='doc')
+    creator_user = relationship('User', backref='goods_exit_docs')
     sending_department = relationship("Department")
     items = relationship("GoodsExit", back_populates="goods_exit_doc")
-    approval = relationship('GoodsExitApproval', back_populates='doc')
 
 class GoodsExit(SQLAlchemyModel):
     __tablename__ = "goods_exits"

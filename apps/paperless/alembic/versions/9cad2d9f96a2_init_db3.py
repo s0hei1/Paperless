@@ -1,8 +1,8 @@
-"""init db
+"""init db3
 
-Revision ID: 8aba2c5c9b3d
+Revision ID: 9cad2d9f96a2
 Revises: 
-Create Date: 2025-08-03 10:01:51.805691
+Create Date: 2025-08-05 15:01:41.505219
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '8aba2c5c9b3d'
+revision: str = '9cad2d9f96a2'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,27 +25,9 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=False),
     sa.Column('code', sa.Integer(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('unit_of_measures',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=64), nullable=False),
-    sa.Column('name_alias', sa.String(length=64), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('goods_exit_docs',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('doc_code', sa.String(length=128), nullable=False),
-    sa.Column('creation_date_time', sa.DateTime(), nullable=True),
-    sa.Column('sending_department_id', sa.Integer(), nullable=True),
-    sa.Column('sending_department_name', sa.String(length=128), nullable=False),
-    sa.Column('exit_reason', sa.String(length=256), nullable=True),
-    sa.Column('destination', sa.String(length=128), nullable=True),
-    sa.Column('address', sa.String(length=512), nullable=True),
-    sa.Column('sending_user_fullname', sa.String(length=128), nullable=True),
-    sa.ForeignKeyConstraint(['sending_department_id'], ['departments.id'], ),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('doc_code')
+    sa.UniqueConstraint('code'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -53,24 +35,40 @@ def upgrade() -> None:
     sa.Column('last_name', sa.String(length=128), nullable=False),
     sa.Column('user_name', sa.String(length=128), nullable=False),
     sa.Column('password', sa.String(length=128), nullable=False),
-    sa.Column('user_roll', sa.Enum('PERSONNEL', 'SUPERVISOR', 'MANAGER', 'SUPER_ADMINISTRATOR', name='userroll'), nullable=False),
+    sa.Column('user_roll', sa.Enum('PERSONNEL', 'SUPERVISOR', 'DEPARTMENT_MANAGER', 'FULL_MANAGER', 'SUPER_ADMINISTRATOR', name='userroll'), nullable=False),
+    sa.Column('managed_department_id', sa.Integer(), nullable=True),
     sa.Column('department_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
+    sa.ForeignKeyConstraint(['managed_department_id'], ['departments.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('user_name')
     )
-    op.create_table('approval_users',
+    op.create_table('goods_exit_docs',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('approval_process', sa.Enum('GOODS_EXIT', name='paperlessprocess'), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('doc_code', sa.String(length=8), nullable=False),
+    sa.Column('creation_date_time', sa.DateTime(), nullable=True),
+    sa.Column('sending_department_id', sa.Integer(), nullable=True),
+    sa.Column('sending_department_name', sa.String(length=128), nullable=False),
+    sa.Column('exit_reason', sa.String(length=256), nullable=False),
+    sa.Column('destination', sa.String(length=128), nullable=False),
+    sa.Column('address_', sa.String(length=512), nullable=False),
+    sa.Column('sending_user_fullname', sa.String(length=128), nullable=False),
+    sa.Column('exit_for_ever', sa.Boolean(), nullable=False),
+    sa.Column('receiver_name', sa.String(length=128), nullable=True),
+    sa.Column('status', sa.Enum('Approved', 'Rejected', 'Pending', name='approvalstatus'), nullable=False),
+    sa.Column('approval_status', sa.Enum('Approved', 'Rejected', 'Pending', name='approvalstatus'), nullable=False),
+    sa.Column('creator_user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['creator_user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['sending_department_id'], ['departments.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('doc_code')
     )
     op.create_table('approvals',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('status', sa.Enum('Approved', 'Rejected', 'Pending', name='approvalstatus'), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('doc_id', sa.Integer(), nullable=False),
+    sa.Column('modification_date_time', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['doc_id'], ['goods_exit_docs.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -80,10 +78,9 @@ def upgrade() -> None:
     sa.Column('description', sa.String(length=256), nullable=False),
     sa.Column('sap_code', sa.String(length=16), nullable=False),
     sa.Column('count', sa.Integer(), nullable=False),
-    sa.Column('unit_of_measure_id', sa.Integer(), nullable=False),
+    sa.Column('unit_of_measure', sa.Enum('QTY', 'METER', 'LITER', 'COUPLE', name='uoms'), nullable=False),
     sa.Column('goods_exit_doc_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['goods_exit_doc_id'], ['goods_exit_docs.id'], ),
-    sa.ForeignKeyConstraint(['unit_of_measure_id'], ['unit_of_measures.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
@@ -94,9 +91,7 @@ def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table('goods_exits')
     op.drop_table('approvals')
-    op.drop_table('approval_users')
-    op.drop_table('users')
     op.drop_table('goods_exit_docs')
-    op.drop_table('unit_of_measures')
+    op.drop_table('users')
     op.drop_table('departments')
     # ### end Alembic commands ###
