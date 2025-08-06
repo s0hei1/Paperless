@@ -1,10 +1,11 @@
+from numpy.random.mtrand import Sequence
 from sqlalchemy import select,func
 from sqlalchemy.orm import selectinload
 
 from apps.paperless.business.exceptions import LogicalException
 from apps.paperless.data.db.read_only_async_session import ReadOnlyAsyncSession
 from apps.paperless.data.enums.process import PaperlessProcess
-from apps.paperless.data.models.models import GoodsExitDoc, Department, User
+from apps.paperless.data.models.models import GoodsExitDoc, Department, User, GoodsExitApproval
 from apps.paperless.utils.three_digit_str import ThreeDigitStr
 
 
@@ -46,9 +47,25 @@ class GoodsExitDocService:
         return doc
 
     async def get_department_manager_user(self) -> User:
+        pass
+
+    """
+    query:
+    select * from goods_exit_approvals as apr
+    where apr.user_id = {user_id}
+    order by apr.modification_date_time desc
+    """
+    async def get_current_user_approvals(self, user_id) -> Sequence[GoodsExitApproval]:
         q = (
-            select(Department.managedDepartment)
+            select(GoodsExitApproval).
+            where(GoodsExitApproval.user_id == user_id).
+            order_by(GoodsExitApproval.modification_date_time.desc())
         )
+        query_result = await self.db.execute(q)
+        return query_result.scalars().all()
+
+
+
 
 
 
