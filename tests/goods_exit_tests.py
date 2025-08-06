@@ -15,6 +15,7 @@ async def test_create_goods_exit_doc(
     create_user = await async_client.post(Routes.User.create.url, json=create_user_request)
     create_user.raise_for_status()
 
+    fake_department_create_request['manager_id'] = create_user.json().get("id")
     department_response = await async_client.post(Routes.Department.create.url, json=fake_department_create_request)
     department_response.raise_for_status()
 

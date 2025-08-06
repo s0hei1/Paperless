@@ -1,8 +1,8 @@
 """init db3
 
-Revision ID: 9cad2d9f96a2
+Revision ID: 6d3d2f94513f
 Revises: 
-Create Date: 2025-08-05 15:01:41.505219
+Create Date: 2025-08-06 08:02:15.519003
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9cad2d9f96a2'
+revision: str = '6d3d2f94513f'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,6 +25,8 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=False),
     sa.Column('code', sa.Integer(), nullable=False),
+    sa.Column('manager_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['manager_id'], ['users.id'], use_alter=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('code'),
     sa.UniqueConstraint('name')
@@ -36,10 +38,8 @@ def upgrade() -> None:
     sa.Column('user_name', sa.String(length=128), nullable=False),
     sa.Column('password', sa.String(length=128), nullable=False),
     sa.Column('user_roll', sa.Enum('PERSONNEL', 'SUPERVISOR', 'DEPARTMENT_MANAGER', 'FULL_MANAGER', 'SUPER_ADMINISTRATOR', name='userroll'), nullable=False),
-    sa.Column('managed_department_id', sa.Integer(), nullable=True),
     sa.Column('department_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['department_id'], ['departments.id'], ),
-    sa.ForeignKeyConstraint(['managed_department_id'], ['departments.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('user_name')
     )
@@ -76,7 +76,7 @@ def upgrade() -> None:
     op.create_table('goods_exits',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('description', sa.String(length=256), nullable=False),
-    sa.Column('sap_code', sa.String(length=16), nullable=False),
+    sa.Column('sap_code', sa.String(length=16), nullable=True),
     sa.Column('count', sa.Integer(), nullable=False),
     sa.Column('unit_of_measure', sa.Enum('QTY', 'METER', 'LITER', 'COUPLE', name='uoms'), nullable=False),
     sa.Column('goods_exit_doc_id', sa.Integer(), nullable=False),
