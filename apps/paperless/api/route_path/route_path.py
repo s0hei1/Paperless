@@ -72,7 +72,9 @@ class Routes:
 
     class GoodsExitDoc(BaseScope):
         scope_name = "goods-exit-doc"
+
         create : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
+        read_user_approvals : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-user-approvals')
 
 
 

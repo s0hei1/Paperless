@@ -4,6 +4,8 @@ from apps.paperless.api.route_path.route_path import Routes
 from global_fixture import  app,async_client
 from fixtures import fake_goods_exit_doc_create_request,create_user_request, fake_department_create_request
 
+
+
 @pytest.mark.asyncio
 async def test_create_goods_exit_doc(
         async_client : AsyncClient,
@@ -38,11 +40,15 @@ async def test_create_goods_exit_doc(
     })
 
     response = await async_client.post(Routes.GoodsExitDoc.create.url, json = fake_goods_exit_doc_create_request)
-    print(response.json())
     response.raise_for_status()
 
 
-
-
-
+@pytest.mark.asyncio
+def test_get_current_user_goods_exit_approvals(
+        async_client: AsyncClient,
+        create_user_request: dict,
+        fake_goods_exit_doc_create_request: dict,
+        fake_department_create_request: dict,
+):
+    pass
 

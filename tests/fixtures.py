@@ -58,3 +58,8 @@ def fake_goods_exit_doc_create_request():
             },
         ]
     }
+
+
+@pytest.fixture()
+def fake_approve_doc():
+    pass

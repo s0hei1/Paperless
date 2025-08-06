@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from apps.paperless.api.route_path.route_path import Routes
-from apps.paperless.business.schema.goods_exit_doc_schema import GoodsExitDocRead, GoodsExitDocCreate
+from apps.paperless.business.schema.goods_exit_doc_schema import GoodsExitDocRead, GoodsExitDocCreate, \
+    GoodsExitDocApprovalRead
 from apps.paperless.business.service.goods_exit_doc_sevice import GoodsExitDocService
 from apps.paperless.data.enums.approval_status import ApprovalStatus
 from apps.paperless.data.enums.unit_of_measure import UOMs
@@ -13,6 +14,7 @@ from apps.paperless.di.service_di import ServiceDI
 from apps.paperless.security.paperless_jwt import JWT
 
 goods_exit_doc_router = APIRouter(tags=[Routes.GoodsExitDoc.scope_name])
+
 
 @goods_exit_doc_router.post(path=Routes.GoodsExitDoc.create.url, response_model=GoodsExitDocRead)
 async def create_goods_exit_doc(
@@ -54,18 +56,26 @@ async def create_goods_exit_doc(
         )
     )) for item in items]
 
-    # approver_users = [
-    #     department.department_manager_id,
-    #     doc_create.approver_guard_id,
-    #     doc_create.approver_manager_id,
-    # ]
-    #
-    # [(await goods_exit_approval_repo.create(
-    #     GoodsExitApproval(
-    #         status=ApprovalStatus.Pending,
-    #         user_id=user_id,
-    #         doc_id=doc.id,
-    #     )
-    # )) for user_id in approver_users]
+    approver_users = [
+        department.manager_id,
+        doc_create.approver_guard_id,
+        doc_create.approver_manager_id,
+    ]
+
+    [(await goods_exit_approval_repo.create(
+        GoodsExitApproval(
+            status=ApprovalStatus.Pending,
+            user_id=user_id,
+            doc_id=doc.id,
+        )
+    )) for user_id in approver_users]
 
     return await goods_exit_doc_service.get_document_with_items(doc_id=doc.id)
+
+
+@goods_exit_doc_router.get(path=Routes.GoodsExitDoc.read_user_approvals.url, response_model=GoodsExitDocApprovalRead)
+async def read_user_approvals(
+        current_user: User = Depends(JWT.authorize),
+        goods_exit_doc_service: GoodsExitDocService = Depends(ServiceDI.goods_exit_doc_service),
+):
+    regoods_exit_doc_service.generate_doc_code()
