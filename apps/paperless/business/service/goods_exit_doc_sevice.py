@@ -24,7 +24,7 @@ class GoodsExitDocService:
 
     async def get_department(self, id: int) -> Department:
         q = (
-            select(Department,User).
+            select(Department).
             where(Department.id == id)
         )
         department = (await self.db.execute(q)).scalar_one_or_none()
@@ -47,7 +47,7 @@ class GoodsExitDocService:
 
     async def get_department_manager_user(self) -> User:
         q = (
-            select(User)
+            select(Department.managedDepartment)
         )
 
 

@@ -1,6 +1,7 @@
 from pydantic import Field, PlainSerializer
 from typing import Annotated
 
+
 to_lower_case = lambda s : s.lower()
 
 UsernameField = Annotated[

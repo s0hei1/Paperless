@@ -38,7 +38,7 @@ def fake_goods_exit_doc_create_request():
         "doc_date": "2025-05-05",
         "sending_department_id": 1,
         "exit_reason": "Its a Garbage",
-        "description": "Recycle bin",
+        "destination": "Recycle bin",
         "address": "Moon",
         "exit_for_ever": True,
         "receiver_name": "Soheil",
