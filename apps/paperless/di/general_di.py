@@ -14,6 +14,7 @@ class GeneralDI:
         from apps.paperless.api.end_points.user_api import user_router
         from apps.paperless.api.end_points.department_api import department_router
         from apps.paperless.api.end_points.goods_exit_doc_api import goods_exit_doc_router
+        from apps.paperless.api.middleware.event_middleware import EventsMiddleware
 
         fast_api_app = FastAPI()
 
@@ -21,6 +22,8 @@ class GeneralDI:
         fast_api_app.include_router(auth_router)
         fast_api_app.include_router(department_router)
         fast_api_app.include_router(goods_exit_doc_router)
+
+        fast_api_app.add_middleware(EventsMiddleware)
 
         return fast_api_app
 

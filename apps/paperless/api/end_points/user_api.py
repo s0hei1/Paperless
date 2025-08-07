@@ -12,42 +12,47 @@ from apps.paperless.security.paperless_jwt import JWT
 
 user_router = APIRouter(tags=[Routes.User.scope_name])
 
+
 @user_router.post(path=Routes.User.create.url, response_model=UserRead)
 async def create_user(
-        user_create: UserCreate,
-        user_repository : UserRepository = Depends(RepositoryDI.user_repository)
+    user_create: UserCreate,
+    user_repository: UserRepository = Depends(RepositoryDI.user_repository),
 ):
     user = await user_repository.create(user_create.to_user())
 
     return user
 
+
 @user_router.get(path=Routes.User.read_one.url, response_model=UserRead)
 async def read_one_user(
-        id: int,
-        user_repository: UserRepository = Depends(RepositoryDI.user_repository)
+    id: int, user_repository: UserRepository = Depends(RepositoryDI.user_repository)
 ):
     user = await user_repository.read_one(id)
     return user
 
+
 @user_router.get(path=Routes.User.read_many.url, response_model=list[UserRead])
 async def read_many_users(
-        user_repository: UserRepository = Depends(RepositoryDI.user_repository)
+    user_repository: UserRepository = Depends(RepositoryDI.user_repository),
 ):
     return await user_repository.read_many()
 
+
 @user_router.put(path=Routes.User.update.url, response_model=UserRead)
 async def update_user(
-        user_update: UserUpdate,
-        id : IdField = Query,
-        user_repository: UserRepository = Depends(RepositoryDI.user_repository)
+    user_update: UserUpdate,
+    id: IdField = Query,
+    user_repository: UserRepository = Depends(RepositoryDI.user_repository),
 ):
-    updated_user = await user_repository.update_user(id = id, **user_update.to_t_value_dict())
+    updated_user = await user_repository.update_user(
+        id=id, **user_update.to_t_value_dict()
+    )
     return updated_user
+
 
 @user_router.delete(path=Routes.User.delete.url, response_model=DeleteSchema)
 async def delete_user(
-        id: int,
-        user_repository: UserRepository = Depends(RepositoryDI.user_repository)
+    id: int, user_repository: UserRepository = Depends(RepositoryDI.user_repository)
 ):
     user = await user_repository.delete(id)
     return user
