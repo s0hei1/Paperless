@@ -55,8 +55,16 @@ class GoodsExitDocRead(Model):
 
     model_config = ConfigDict(from_attributes=True)
 
-class GoodsExitDocApprovalRead(Model):
+class CurrentUserGoodsExitDocApprovalRead(Model):
     id : IdField
+    status : ApprovalStatus
     doc : GoodsExitDocRead
 
+    model_config = ConfigDict(from_attributes=True)
 
+class GoodsExitDocApprovalRead(Model):
+    id : IdField
+    doc_id : IdField
+    user_id :IdField
+
+    model_config = ConfigDict(from_attributes=True)

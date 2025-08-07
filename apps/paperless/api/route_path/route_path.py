@@ -35,6 +35,12 @@ class BaseScope(ABC):
 
 class Routes:
 
+    @classmethod
+    def get_route_by_path(cls,url_pth: str) -> ApiRoute:
+        version, scope, path = url_pth.split('/')
+        pass
+
+
     class User(BaseScope):
 
         scope_name = "user"
@@ -75,7 +81,11 @@ class Routes:
 
         create : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
         read_user_approvals : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-user-approvals')
+        read_many_approvals : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-many-approvals')
+        read_one_approval : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-one-approval')
+        approve_good_exit_doc : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='approve-good-exit-doc')
 
+print([i for i in dir(Routes) if not i.startswith("__")])
 
 
 

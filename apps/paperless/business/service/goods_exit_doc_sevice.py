@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from apps.paperless.business.exceptions import LogicalException
 from apps.paperless.data.db.read_only_async_session import ReadOnlyAsyncSession
 from apps.paperless.data.enums.process import PaperlessProcess
-from apps.paperless.data.models.models import GoodsExitDoc, Department, User, GoodsExitApproval
+from apps.paperless.data.models.models import GoodsExitDoc, Department, User, GoodsExitApproval, GoodsExit
 from apps.paperless.utils.three_digit_str import ThreeDigitStr
 
 
@@ -52,25 +52,32 @@ class GoodsExitDocService:
     """
     query:
     select * from goods_exit_approvals as apr
+    join good_exit_docs as doc on apr.doc_id = doc.id
+    join good_exits as item on item.doc_id = doc.id
     where apr.user_id = {user_id}
     order by apr.modification_date_time desc
     """
     async def get_current_user_approvals(self, user_id) -> Sequence[GoodsExitApproval]:
         q = (
             select(GoodsExitApproval).
+            options(
+                selectinload(GoodsExitApproval.doc).selectinload(GoodsExitDoc.items)
+            ).
             where(GoodsExitApproval.user_id == user_id).
             order_by(GoodsExitApproval.modification_date_time.desc())
         )
         query_result = await self.db.execute(q)
         return query_result.scalars().all()
 
+    async def get_goods_exit_with_approvals(self,doc_id : int) -> GoodsExitDoc:
+        q = (
+            select(GoodsExitDoc).
+            options(selectinload(GoodsExitDoc.approvals)).
+            where(GoodsExitDoc.id == doc_id)
+        )
+        query_result = await self.db.execute(q)
+        obj = query_result.scalar_one_or_none()
+        if obj is None:
+            raise LogicalException(f"there is no goods exit doc with id {doc_id}")
 
-
-
-
-
-
-
-
-
-
+        return obj

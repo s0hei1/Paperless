@@ -3,9 +3,9 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from typing import Sequence
 
+from apps.paperless.data.enums.approval_status import ApprovalStatus
 from apps.paperless.data.models.models import GoodsExitApproval
 from apps.paperless.data.value.tvalue import TValue
-
 
 class GoodsExitApprovalRepository:
 
@@ -17,6 +17,10 @@ class GoodsExitApprovalRepository:
         await self.db.commit()
         await self.db.refresh(approval)
         return approval
+
+    async def create_many(self, approvals: list[GoodsExitApproval]) -> Sequence[GoodsExitApproval]:
+        response = [await self.create(i) for i in approvals]
+        return response
 
     async def read_one(self, approval_id: int) -> GoodsExitApproval:
         q = select(GoodsExitApproval).where(GoodsExitApproval.id == approval_id)
@@ -33,10 +37,13 @@ class GoodsExitApprovalRepository:
         result = await self.db.execute(q)
         return result.scalars().all()
 
+    async def approve(self,id : int) -> GoodsExitApproval:
+        return await self.update(id, status=TValue(ApprovalStatus.Approved))
+
     async def update(
         self,
         id: int,
-        status: TValue[str] | None = None,  # You can change to TValue[ApprovalStatus] if preferred
+        status: TValue[ApprovalStatus] | None = None,  # You can change to TValue[ApprovalStatus] if preferred
         user_id: TValue[int] | None = None,
         doc_id: TValue[int] | None = None
     ) -> GoodsExitApproval:
