@@ -7,10 +7,10 @@ from apps.paperless.data.repository.goods_exit_approvals import (
 from apps.paperless.data.value.tvalue import TValue
 from apps.paperless.di import RepositoryDI
 from apps.paperless.di.service_di import ServiceDI
-from apps.paperless.events.event_emiter import event_emitter, Events
+from apps.paperless.events.event_emiter import event_emitter, OnApproveGoodsExitEvent, OnAddGoodsExitDoc
 
 
-@event_emitter.on(Events.on_approve_goods_exit_event)
+@event_emitter.on(OnApproveGoodsExitEvent)
 async def on_approve_goods_exit_event(
     doc_id: int,
     goods_exit_doc_service: GoodsExitDocService = Depends(
@@ -36,3 +36,6 @@ async def on_approve_goods_exit_event(
 
     await goods_exit_approval_repo.update(id=doc_id, status=TValue(obj.status))
 
+@event_emitter.on(OnAddGoodsExitDoc)
+def on_add_goods_exit_doc():
+    pass

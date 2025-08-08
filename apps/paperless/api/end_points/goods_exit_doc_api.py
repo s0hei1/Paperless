@@ -23,6 +23,8 @@ from apps.paperless.data.repository.goods_exit_docs import GoodsExitDocRepositor
 from apps.paperless.di import RepositoryDI
 from apps.paperless.di.service_di import ServiceDI
 from apps.paperless.security.paperless_jwt import JWT
+from apps.paperless.events.event_emiter import event_emitter,OnApproveGoodsExitEvent
+
 
 goods_exit_doc_router = APIRouter(tags=[Routes.GoodsExitDoc.scope_name])
 
@@ -124,5 +126,7 @@ async def approve_good_exit_approvals(
     ),
 ):
     result = await goods_exit_doc_service.get_current_user_approvals(current_user.id)
+
+    event_emitter.emit(OnApproveGoodsExitEvent,doc_id)
 
     return result

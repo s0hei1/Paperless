@@ -1,12 +1,9 @@
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
-
 from apps.paperless.api.route_path.route_path import Routes
 from global_fixture import app, async_client
 from fixtures import create_user_request,fake_fail_login_request
-
-
 
 @pytest.mark.asyncio
 async def test_success_login(
