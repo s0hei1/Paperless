@@ -5,6 +5,13 @@ from pyee.asyncio import AsyncIOEventEmitter
 event_emitter = AsyncIOEventEmitter()
 
 
-class Events:
-    on_approve_goods_exit_event : ClassVar[str] = "on_approve_goods_exit_event"
+class MetaEvent(type):
+    def __repr__(cls) -> str:
+        return cls.__name__
 
+class BaseEvent(metaclass=MetaEvent):
+    def __str__(cls):
+        return cls.__name__
+
+class OnApproveGoodsExitEvent(BaseEvent): pass
+class OnAddGoodsExitDoc(BaseEvent): pass
