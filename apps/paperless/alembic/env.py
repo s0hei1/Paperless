@@ -2,15 +2,16 @@ import os
 from typing import AnyStr
 import sys
 
-def get_current_path_parent(path : AnyStr, depth = 1):
+
+def get_current_path_parent(path: AnyStr, depth=1):
     if depth == 0:
         return path
     else:
         path = os.path.dirname(path)
-        return get_current_path_parent(path = path ,depth = depth - 1)
+        return get_current_path_parent(path=path, depth=depth - 1)
 
-sys.path.append(get_current_path_parent(path=os.path.abspath(__file__), depth = 4))
 
+sys.path.append(get_current_path_parent(path=os.path.abspath(__file__), depth=4))
 
 
 from logging.config import fileConfig
@@ -32,7 +33,9 @@ if config.config_file_name is not None:
 target_metadata = SQLAlchemyModel.metadata
 settings = GeneralDI.settings()
 
-config.set_main_option("sqlalchemy.url", settings.development_db.replace('+aiosqlite', ''))
+config.set_main_option(
+    "sqlalchemy.url", settings.development_db.replace("+aiosqlite", "")
+)
 
 
 def run_migrations_offline() -> None:
@@ -73,9 +76,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

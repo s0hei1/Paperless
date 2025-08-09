@@ -5,6 +5,7 @@ from sqlalchemy.orm import DeclarativeMeta
 
 ModelType = TypeVar("ModelType")
 
+
 class BaseRepository(Generic[ModelType]):
     def __init__(self, model: Type[ModelType], session: AsyncSession):
         self.model = model
@@ -18,7 +19,9 @@ class BaseRepository(Generic[ModelType]):
         return obj
 
     async def get_by_id(self, id: int) -> ModelType | None:
-        result = await self.session.execute(select(self.model).where(self.model.id == id))
+        result = await self.session.execute(
+            select(self.model).where(self.model.id == id)
+        )
         return result.scalar_one_or_none()
 
     async def get_all(self) -> List[ModelType]:

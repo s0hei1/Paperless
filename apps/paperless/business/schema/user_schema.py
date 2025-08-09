@@ -2,7 +2,12 @@ from pydantic import ConfigDict
 
 from apps.paperless.business.base.pydantic_base_model import Model
 from apps.paperless.data.enums.user_rolls import UserRoll
-from apps.paperless.business.schema.fields import IdField, ShortStringField, PasswordField, UsernameField
+from apps.paperless.business.schema.fields import (
+    IdField,
+    ShortStringField,
+    PasswordField,
+    UsernameField,
+)
 from apps.paperless.data.models.models import User
 from apps.paperless.data.value.tvalue import TValue
 
@@ -25,11 +30,13 @@ class UserCreate(Model):
             department_id=self.department_id,
         )
 
+
 class UserUpdate(Model):
     first_name: ShortStringField | None = None
     last_name: ShortStringField | None = None
     user_roll: UserRoll | None = None
     department_id: IdField | None = None
+
 
 class UserRead(Model):
     id: IdField

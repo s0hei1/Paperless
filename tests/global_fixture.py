@@ -17,5 +17,3 @@ async def async_client(app: FastAPI) -> AsyncClient:
         base_url="http://test/",
     ) as client:
         yield client
-
-

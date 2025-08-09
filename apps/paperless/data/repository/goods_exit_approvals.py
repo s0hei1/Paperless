@@ -7,6 +7,7 @@ from apps.paperless.data.enums.approval_status import ApprovalStatus
 from apps.paperless.data.models.models import GoodsExitApproval
 from apps.paperless.data.value.tvalue import TValue
 
+
 class GoodsExitApprovalRepository:
 
     def __init__(self, db: AsyncSession):
@@ -18,7 +19,9 @@ class GoodsExitApprovalRepository:
         await self.db.refresh(approval)
         return approval
 
-    async def create_many(self, approvals: list[GoodsExitApproval]) -> Sequence[GoodsExitApproval]:
+    async def create_many(
+        self, approvals: list[GoodsExitApproval]
+    ) -> Sequence[GoodsExitApproval]:
         response = [await self.create(i) for i in approvals]
         return response
 
@@ -28,7 +31,9 @@ class GoodsExitApprovalRepository:
         approval = result.scalar_one_or_none()
 
         if approval is None:
-            raise NoResultFound(f"GoodsExitApproval with id: {approval_id} does not exist")
+            raise NoResultFound(
+                f"GoodsExitApproval with id: {approval_id} does not exist"
+            )
 
         return approval
 
@@ -37,15 +42,17 @@ class GoodsExitApprovalRepository:
         result = await self.db.execute(q)
         return result.scalars().all()
 
-    async def approve(self,id : int) -> GoodsExitApproval:
+    async def approve(self, id: int) -> GoodsExitApproval:
         return await self.update(id, status=TValue(ApprovalStatus.Approved))
 
     async def update(
         self,
         id: int,
-        status: TValue[ApprovalStatus] | None = None,  # You can change to TValue[ApprovalStatus] if preferred
+        status: (
+            TValue[ApprovalStatus] | None
+        ) = None,  # You can change to TValue[ApprovalStatus] if preferred
         user_id: TValue[int] | None = None,
-        doc_id: TValue[int] | None = None
+        doc_id: TValue[int] | None = None,
     ) -> GoodsExitApproval:
         approval = await self.read_one(id)
 

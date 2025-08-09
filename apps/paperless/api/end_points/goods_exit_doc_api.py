@@ -22,9 +22,10 @@ from apps.paperless.data.repository.goods_exit_approvals import (
 from apps.paperless.data.repository.goods_exit_docs import GoodsExitDocRepository
 from apps.paperless.di import RepositoryDI
 from apps.paperless.di.service_di import ServiceDI
+from apps.paperless.events.events import Events
+from apps.paperless.events.events_schema import OnAddGoodsExitDocSchema
 from apps.paperless.security.paperless_jwt import JWT
-from apps.paperless.events.event_emiter import event_emitter,OnApproveGoodsExitEvent
-
+from apps.paperless.events.event_emiter import event_emitter
 
 goods_exit_doc_router = APIRouter(tags=[Routes.GoodsExitDoc.scope_name])
 
@@ -84,18 +85,15 @@ async def create_goods_exit_doc(
         for item in items
     ]
 
-    approver_users = [
-        department.manager_id,
-        doc_create.approver_guard_id,
-        doc_create.approver_manager_id,
-    ]
-
-    approvals = [
-        GoodsExitApproval(status=ApprovalStatus.Pending, user_id=user_id, doc_id=doc.id)
-        for user_id in approver_users
-    ]
-
-    await goods_exit_approval_repo.create_many(approvals)
+    event_emitter.emit(
+        Events.OnCreateGoodsExitDoc,
+        OnAddGoodsExitDocSchema(
+            doc_id=doc.id,
+            department_manager_id=department.manager_id,
+            approver_guard_id=doc_create.approver_guard_id,
+            approver_manager_id=doc_create.approver_manager_id,
+        ),
+    )
 
     return await goods_exit_doc_service.get_document_with_items(doc_id=doc.id)
 
@@ -125,8 +123,9 @@ async def approve_good_exit_approvals(
         RepositoryDI.good_exit_approval_repository
     ),
 ):
-    result = await goods_exit_doc_service.get_current_user_approvals(current_user.id)
-
-    event_emitter.emit(OnApproveGoodsExitEvent,doc_id)
-
-    return result
+    pass
+    # result = await goods_exit_doc_service.get_current_user_approvals(current_user.id)
+    #
+    # event_emitter.emit(OnApproveGoodsExitEvent,doc_id)
+    #
+    # return result

@@ -40,7 +40,7 @@ class GoodsExitRepository:
         sap_code: TValue[str] | None = None,
         count: TValue[int] | None = None,
         unit_of_measure: TValue[str] | None = None,
-        goods_exit_doc_id: TValue[int] | None = None
+        goods_exit_doc_id: TValue[int] | None = None,
     ) -> GoodsExit:
         item = await self.read_one(id)
 

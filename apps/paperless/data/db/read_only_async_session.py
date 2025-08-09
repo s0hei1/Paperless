@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
+
 class ReadOnlyAsyncSession(AsyncSession):
 
     async def add(self, instance: object, _warn: bool = True) -> None:
@@ -16,4 +17,3 @@ class ReadOnlyAsyncSession(AsyncSession):
 
     async def rollback(self) -> None:
         raise PermissionError("Read only session does not support rollback")
-

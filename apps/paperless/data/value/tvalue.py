@@ -2,10 +2,11 @@ from typing import Generic, TypeVar
 
 from pydantic import BaseModel
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 class TValue(Generic[T]):
-    value : T
+    value: T
 
     def __init__(self, value: T):
         self.value = value
@@ -16,7 +17,7 @@ class TValue(Generic[T]):
     def __str__(self):
         return str(self.value)
 
-    def __eq__(self, other : 'TValue[T]'):
+    def __eq__(self, other: "TValue[T]"):
         return self.value == other.value
 
     def unwrap(self) -> T:

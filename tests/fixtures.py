@@ -6,30 +6,24 @@ from random import randint
 def create_user_request() -> dict:
     any_int = randint(0, 1000)
     return {
-        'first_name': f'maryam',
-        'last_name': f'p',
-        'user_name': f'testuser_{any_int}',
-        'password': 'test_password',
-        'user_roll': 1,
+        "first_name": f"maryam",
+        "last_name": f"p",
+        "user_name": f"testuser_{any_int}",
+        "password": "test_password",
+        "user_roll": 1,
         "department_id": 1,
     }
 
 
 @pytest.fixture()
 def fake_fail_login_request() -> dict:
-    return {
-        'username': 'testuser',
-        'password': 'wrong_password'
-    }
+    return {"username": "testuser", "password": "wrong_password"}
 
 
 @pytest.fixture()
 def fake_department_create_request():
     any_int = randint(100, 999)
-    return {
-        "name": f"Test Department_{any_int}",
-        "code": any_int
-    }
+    return {"name": f"Test Department_{any_int}", "code": any_int}
 
 
 @pytest.fixture()
@@ -56,7 +50,7 @@ def fake_goods_exit_doc_create_request():
                 "count": "10",
                 "unit_of_measure_id": 1,
             },
-        ]
+        ],
     }
 
 

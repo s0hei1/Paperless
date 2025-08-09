@@ -5,6 +5,7 @@ from typing import Sequence
 from apps.paperless.data.models.models import GoodsExitDoc
 from apps.paperless.data.value.tvalue import TValue
 
+
 class GoodsExitDocRepository:
 
     def __init__(self, db: AsyncSession):
@@ -40,7 +41,7 @@ class GoodsExitDocRepository:
         exit_reason: TValue[str] | None = None,
         destination: TValue[str] | None = None,
         address: TValue[str] | None = None,
-        sending_user_fullname: TValue[str] | None = None
+        sending_user_fullname: TValue[str] | None = None,
     ) -> GoodsExitDoc:
         doc = await self.read_one(id)
 

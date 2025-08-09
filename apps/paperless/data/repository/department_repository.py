@@ -9,6 +9,7 @@ from apps.paperless.data.value.tvalue import TValue
 
 # adjust path if TValue is elsewhere
 
+
 class DepartmentRepository:
 
     def __init__(self, db: AsyncSession):

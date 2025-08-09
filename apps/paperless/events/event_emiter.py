@@ -1,17 +1,13 @@
 from typing import ClassVar
 
 from pyee.asyncio import AsyncIOEventEmitter
+from apps.paperless.events.events import Events
+from apps.paperless.events.goods_exit_events import (
+    on_approve_goods_exit_event,
+    on_create_goods_exit_doc,
+)
 
 event_emitter = AsyncIOEventEmitter()
 
-
-class MetaEvent(type):
-    def __repr__(cls) -> str:
-        return cls.__name__
-
-class BaseEvent(metaclass=MetaEvent):
-    def __str__(cls):
-        return cls.__name__
-
-class OnApproveGoodsExitEvent(BaseEvent): pass
-class OnAddGoodsExitDoc(BaseEvent): pass
+event_emitter.add_listener(Events.OnApproveGoodsExitEvent, on_approve_goods_exit_event)
+event_emitter.add_listener(Events.OnCreateGoodsExitDoc, on_create_goods_exit_doc)

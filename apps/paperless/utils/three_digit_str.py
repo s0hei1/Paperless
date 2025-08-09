@@ -1,5 +1,3 @@
-
-
 class ThreeDigitStr(str):
 
     def __new__(cls, value):

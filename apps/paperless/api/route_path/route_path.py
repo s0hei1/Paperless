@@ -2,24 +2,27 @@ from dataclasses import dataclass
 from typing import ClassVar
 from abc import ABC
 
+
 @dataclass()
 class ApiRoute:
-    scope : str
-    path : str
-    version : str = 'v1'
+    scope: str
+    path: str
+    version: str = "v1"
 
     def __post_init__(self):
-        self.scope = self.scope.replace('\\', '').replace('/', '')
-        self.path = self.path.replace('\\', '').replace('/', '')
+        self.scope = self.scope.replace("\\", "").replace("/", "")
+        self.path = self.path.replace("\\", "").replace("/", "")
 
-        if '_' in self.path:
+        if "_" in self.path:
             raise ValueError("Path cannot contain underscore")
-        if '_' in self.scope:
-            raise ValueError("Scope cannot contain underscore, check you define scope name for all scopes")
+        if "_" in self.scope:
+            raise ValueError(
+                "Scope cannot contain underscore, check you define scope name for all scopes"
+            )
 
     @property
     def url(self) -> str:
-        return f'/{self.version}/{self.scope}/{self.path}'
+        return f"/{self.version}/{self.scope}/{self.path}"
 
     def __repr__(self):
         return self.url
@@ -30,62 +33,70 @@ class ApiRoute:
 
 class BaseScope(ABC):
 
-    scope_name : str = "_"
+    scope_name: str = "_"
 
 
 class Routes:
 
     @classmethod
-    def get_route_by_path(cls,url_pth: str) -> ApiRoute:
-        version, scope, path = url_pth.split('/')
+    def get_route_by_path(cls, url_pth: str) -> ApiRoute:
+        version, scope, path = url_pth.split("/")
         pass
-
 
     class User(BaseScope):
 
         scope_name = "user"
 
-        create : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
-        read_one : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-one')
-        read_many : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-many')
-        update : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='update')
-        delete : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='delete')
-
+        create: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="create")
+        read_one: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="read-one")
+        read_many: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="read-many")
+        update: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="update")
+        delete: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="delete")
 
     class Auth(BaseScope):
 
         scope_name = "auth"
 
-        login : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='login')
-        change_password : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='change-password')
-        reset_password : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='reset-password')
+        login: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="login")
+        change_password: ClassVar[ApiRoute] = ApiRoute(
+            scope=scope_name, path="change-password"
+        )
+        reset_password: ClassVar[ApiRoute] = ApiRoute(
+            scope=scope_name, path="reset-password"
+        )
 
     class GoodsExit(BaseScope):
         scope_name = "goods-exit"
-        create : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
-        read_one : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-one')
-        read_many : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-many')
-        update : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='update')
-        delete : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='delete')
+        create: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="create")
+        read_one: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="read-one")
+        read_many: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="read-many")
+        update: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="update")
+        delete: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="delete")
 
     class Department(BaseScope):
         scope_name = "department"
-        create: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
-        read_one: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-one')
-        read_many: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-many')
-        update: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='update')
-        delete: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='delete')
+        create: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="create")
+        read_one: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="read-one")
+        read_many: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="read-many")
+        update: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="update")
+        delete: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="delete")
 
     class GoodsExitDoc(BaseScope):
         scope_name = "goods-exit-doc"
 
-        create : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='create')
-        read_user_approvals : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-user-approvals')
-        read_many_approvals : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-many-approvals')
-        read_one_approval : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='read-one-approval')
-        approve_good_exit_doc : ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path='approve-good-exit-doc')
+        create: ClassVar[ApiRoute] = ApiRoute(scope=scope_name, path="create")
+        read_user_approvals: ClassVar[ApiRoute] = ApiRoute(
+            scope=scope_name, path="read-user-approvals"
+        )
+        read_many_approvals: ClassVar[ApiRoute] = ApiRoute(
+            scope=scope_name, path="read-many-approvals"
+        )
+        read_one_approval: ClassVar[ApiRoute] = ApiRoute(
+            scope=scope_name, path="read-one-approval"
+        )
+        approve_good_exit_doc: ClassVar[ApiRoute] = ApiRoute(
+            scope=scope_name, path="approve-good-exit-doc"
+        )
+
 
 print([i for i in dir(Routes) if not i.startswith("__")])
-
-
-
