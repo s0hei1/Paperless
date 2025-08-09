@@ -42,9 +42,6 @@ class GoodsExitApprovalRepository:
         result = await self.db.execute(q)
         return result.scalars().all()
 
-    async def approve(self, id: int) -> GoodsExitApproval:
-        return await self.update(id, status=TValue(ApprovalStatus.Approved))
-
     async def update(
         self,
         id: int,

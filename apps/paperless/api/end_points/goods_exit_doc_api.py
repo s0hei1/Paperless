@@ -1,3 +1,5 @@
+from http.client import HTTPException
+from typing import Sequence
 from fastapi import APIRouter, Depends, Query
 from apps.paperless.api.route_path.route_path import Routes
 from apps.paperless.business.schema.fields import IdField
@@ -20,6 +22,7 @@ from apps.paperless.data.repository.goods_exit_approvals import (
     GoodsExitApprovalRepository,
 )
 from apps.paperless.data.repository.goods_exit_docs import GoodsExitDocRepository
+from apps.paperless.data.value.tvalue import TValue
 from apps.paperless.di import RepositoryDI
 from apps.paperless.di.service_di import ServiceDI
 from apps.paperless.events.events import Events
@@ -122,10 +125,17 @@ async def approve_good_exit_approvals(
     goods_exit_doc_repo: GoodsExitApprovalRepository = Depends(
         RepositoryDI.good_exit_approval_repository
     ),
+    goods_exit_doc_service: GoodsExitDocService = Depends(
+        ServiceDI.goods_exit_doc_service
+    ),
+    current_user: User = Depends(JWT.authorize),
 ):
-    pass
-    # result = await goods_exit_doc_service.get_current_user_approvals(current_user.id)
-    #
-    # event_emitter.emit(OnApproveGoodsExitEvent,doc_id)
-    #
-    # return result
+    await goods_exit_doc_service.validate_approval_with_user_id(
+        user_id=current_user.id, approval_id=good_exit_approval_id
+    )
+    result = await goods_exit_doc_repo.update(
+        good_exit_approval_id, status=TValue(ApprovalStatus.Approved)
+    )
+    event_emitter.emit(Events.OnApproveGoodsExitEvent, result.doc_id)
+
+    return result
