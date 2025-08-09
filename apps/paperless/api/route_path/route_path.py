@@ -38,7 +38,6 @@ class BaseScope(ABC):
 
 class Routes:
 
-
     class User(BaseScope):
 
         scope_name = "user"
@@ -93,4 +92,3 @@ class Routes:
         approve_good_exit_doc: ClassVar[ApiRoute] = ApiRoute(
             scope=scope_name, path="approve-good-exit-doc"
         )
-

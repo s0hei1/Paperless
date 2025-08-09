@@ -71,7 +71,9 @@ class GoodsExitDocService:
             .order_by(GoodsExitApproval.modification_date_time.desc())
         )
         query_result = await self.db.execute(q)
-        return query_result.scalars().all()
+        approvals =  query_result.scalars().all()
+
+        return approvals
 
     async def get_goods_exit_with_approvals(self, doc_id: int) -> GoodsExitDoc:
         q = (
@@ -85,3 +87,14 @@ class GoodsExitDocService:
             raise LogicalException(f"there is no goods exit doc with id {doc_id}")
 
         return obj
+
+
+
+    async def validate_approval_with_user_id(self, user_id : int, approval_id : int) -> None:
+        approvals = await self.get_current_user_approvals(user_id)
+
+        if approval_id is not None:
+            if approval_id not in [i.id for i in approvals]:
+                raise LogicalException(
+                    f"there is no approvals with id {approval_id} for user id {user_id}}")
+
