@@ -38,10 +38,6 @@ class BaseScope(ABC):
 
 class Routes:
 
-    @classmethod
-    def get_route_by_path(cls, url_pth: str) -> ApiRoute:
-        version, scope, path = url_pth.split("/")
-        pass
 
     class User(BaseScope):
 
@@ -98,5 +94,3 @@ class Routes:
             scope=scope_name, path="approve-good-exit-doc"
         )
 
-
-print([i for i in dir(Routes) if not i.startswith("__")])
