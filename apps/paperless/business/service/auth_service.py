@@ -10,11 +10,12 @@ from apps.paperless.security.paperless_jwt import JWT
 
 class AuthService:
 
-    def __init__(self, db : ReadOnlyAsyncSession):
+    def __init__(self, db: ReadOnlyAsyncSession):
         self.db = db
 
-
-    async def login(self, user_name : UsernameField, password : PasswordField) -> TokenSchema:
+    async def login(
+        self, user_name: UsernameField, password: PasswordField
+    ) -> TokenSchema:
 
         q = select(User).where(User.user_name == user_name, User.password == password)
         query_result = await self.db.execute(q)
@@ -25,4 +26,3 @@ class AuthService:
 
         token = JWT.create_access_token(obj.user_name)
         return TokenSchema(token=token)
-

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class UserRoll(Enum):
     PERSONNEL = 0
     SUPERVISOR = 1
@@ -7,4 +8,3 @@ class UserRoll(Enum):
     FULL_MANAGER = 3
 
     SUPER_ADMINISTRATOR = 9
-

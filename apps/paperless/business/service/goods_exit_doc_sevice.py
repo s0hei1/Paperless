@@ -1,17 +1,23 @@
 from numpy.random.mtrand import Sequence
-from sqlalchemy import select,func
+from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
 from apps.paperless.business.exceptions import LogicalException
 from apps.paperless.data.db.read_only_async_session import ReadOnlyAsyncSession
 from apps.paperless.data.enums.process import PaperlessProcess
-from apps.paperless.data.models.models import GoodsExitDoc, Department, User, GoodsExitApproval, GoodsExit
+from apps.paperless.data.models.models import (
+    GoodsExitDoc,
+    Department,
+    User,
+    GoodsExitApproval,
+    GoodsExit,
+)
 from apps.paperless.utils.three_digit_str import ThreeDigitStr
 
 
 class GoodsExitDocService:
 
-    def __init__(self, db : ReadOnlyAsyncSession):
+    def __init__(self, db: ReadOnlyAsyncSession):
         self.db = db
 
     async def generate_doc_code(self):
@@ -21,13 +27,10 @@ class GoodsExitDocService:
 
         code = "0001" if max_id is None else str(max_id)
 
-        return f'{code_prefix}{code}'
+        return f"{code_prefix}{code}"
 
     async def get_department(self, id: int) -> Department:
-        q = (
-            select(Department).
-            where(Department.id == id)
-        )
+        q = select(Department).where(Department.id == id)
         department = (await self.db.execute(q)).scalar_one_or_none()
 
         if department is None:
@@ -37,9 +40,9 @@ class GoodsExitDocService:
     async def get_document_with_items(self, doc_id: int) -> GoodsExitDoc:
 
         q = (
-            select(GoodsExitDoc).
-            options(selectinload(GoodsExitDoc.items)).
-            where(GoodsExitDoc.id == doc_id)
+            select(GoodsExitDoc)
+            .options(selectinload(GoodsExitDoc.items))
+            .where(GoodsExitDoc.id == doc_id)
         )
 
         doc = (await self.db.execute(q)).scalar_one_or_none()
@@ -57,23 +60,24 @@ class GoodsExitDocService:
     where apr.user_id = {user_id}
     order by apr.modification_date_time desc
     """
+
     async def get_current_user_approvals(self, user_id) -> Sequence[GoodsExitApproval]:
         q = (
-            select(GoodsExitApproval).
-            options(
+            select(GoodsExitApproval)
+            .options(
                 selectinload(GoodsExitApproval.doc).selectinload(GoodsExitDoc.items)
-            ).
-            where(GoodsExitApproval.user_id == user_id).
-            order_by(GoodsExitApproval.modification_date_time.desc())
+            )
+            .where(GoodsExitApproval.user_id == user_id)
+            .order_by(GoodsExitApproval.modification_date_time.desc())
         )
         query_result = await self.db.execute(q)
         return query_result.scalars().all()
 
-    async def get_goods_exit_with_approvals(self,doc_id : int) -> GoodsExitDoc:
+    async def get_goods_exit_with_approvals(self, doc_id: int) -> GoodsExitDoc:
         q = (
-            select(GoodsExitDoc).
-            options(selectinload(GoodsExitDoc.approvals)).
-            where(GoodsExitDoc.id == doc_id)
+            select(GoodsExitDoc)
+            .options(selectinload(GoodsExitDoc.approvals))
+            .where(GoodsExitDoc.id == doc_id)
         )
         query_result = await self.db.execute(q)
         obj = query_result.scalar_one_or_none()

@@ -6,12 +6,15 @@ class ApprovalUserBase(BaseModel):
     approval_process: PaperlessProcess
     user_id: int
 
+
 class ApprovalUserCreate(ApprovalUserBase):
     pass
+
 
 class ApprovalUserUpdate(BaseModel):
     approval_process: PaperlessProcess | None = None
     user_id: int | None = None
+
 
 class ApprovalUserRead(ApprovalUserBase):
     id: int

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ApprovalStatus(Enum):
     Approved = 1
     Rejected = 2

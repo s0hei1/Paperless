@@ -1,7 +1,5 @@
-
-
 class LogicalException(Exception):
-    message : str
+    message: str
 
-    def __init__(self, message = 'a logical exception was raised'):
+    def __init__(self, message="a logical exception was raised"):
         self.message = message

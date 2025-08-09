@@ -12,7 +12,7 @@ class UserRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create(self, user : User):
+    async def create(self, user: User):
 
         if user.user_roll == UserRoll.SUPER_ADMINISTRATOR:
             raise Exception("You can not create user with super admin type")
@@ -23,7 +23,7 @@ class UserRepository:
 
         return user
 
-    async def read_one(self, user_id : int) -> User :
+    async def read_one(self, user_id: int) -> User:
         q = select(User).where(User.id == user_id)
         query_result = await self.db.execute(q)
         obj = query_result.scalar_one_or_none()
@@ -40,12 +40,12 @@ class UserRepository:
         return objs
 
     async def update_user(
-            self,
-            id : int,
-            first_name : TValue[str] | None = None,
-            last_name : TValue[str] | None = None,
-            user_roll : TValue[UserRoll] | None = None,
-            department_id : TValue[int] | None = None,
+        self,
+        id: int,
+        first_name: TValue[str] | None = None,
+        last_name: TValue[str] | None = None,
+        user_roll: TValue[UserRoll] | None = None,
+        department_id: TValue[int] | None = None,
     ):
         user = await self.read_one(id)
 
@@ -63,7 +63,7 @@ class UserRepository:
 
         return user
 
-    async def delete(self,id : int) -> User:
+    async def delete(self, id: int) -> User:
         user = await self.read_one(id)
 
         await self.db.delete(user)
@@ -85,7 +85,7 @@ class UserRepository:
         await self.db.refresh(user)
         return user
 
-    async def activate_user(self, user_id : int) -> User:
+    async def activate_user(self, user_id: int) -> User:
         user = await self.read_one(user_id)
         user.is_active = True
         await self.db.commit()
@@ -100,4 +100,3 @@ class UserRepository:
         await self.db.commit()
         await self.db.refresh(user)
         return user
-

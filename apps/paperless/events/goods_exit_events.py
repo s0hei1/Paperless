@@ -10,6 +10,7 @@ from apps.paperless.di import RepositoryDI
 from apps.paperless.di.service_di import ServiceDI
 from apps.paperless.events.events_schema import OnAddGoodsExitDocSchema
 
+
 async def on_approve_goods_exit_event(
     doc_id: int,
     goods_exit_doc_service: GoodsExitDocService = Depends(
@@ -35,6 +36,7 @@ async def on_approve_goods_exit_event(
 
     await goods_exit_approval_repo.update(id=doc_id, status=TValue(obj.status))
 
+
 async def on_create_goods_exit_doc(
     event_schema: OnAddGoodsExitDocSchema,
     goods_exit_approval_repo: GoodsExitApprovalRepository = Depends(
@@ -42,9 +44,10 @@ async def on_create_goods_exit_doc(
     ),
 ):
     approvals = [
-        GoodsExitApproval(status=ApprovalStatus.Pending, user_id=user_id, doc_id=event_schema.doc_id)
+        GoodsExitApproval(
+            status=ApprovalStatus.Pending, user_id=user_id, doc_id=event_schema.doc_id
+        )
         for user_id in event_schema.get_approvers()
     ]
 
     await goods_exit_approval_repo.create_many(approvals)
-

@@ -85,12 +85,15 @@ async def create_goods_exit_doc(
         for item in items
     ]
 
-    event_emitter.emit(Events.OnCreateGoodsExitDoc, OnAddGoodsExitDocSchema(
-        doc_id=doc.id,
-        department_manager_id=department.manager_id,
-        approver_guard_id=doc_create.approver_guard_id,
-        approver_manager_id= doc_create.approver_manager_id
-    ))
+    event_emitter.emit(
+        Events.OnCreateGoodsExitDoc,
+        OnAddGoodsExitDocSchema(
+            doc_id=doc.id,
+            department_manager_id=department.manager_id,
+            approver_guard_id=doc_create.approver_guard_id,
+            approver_manager_id=doc_create.approver_manager_id,
+        ),
+    )
 
     return await goods_exit_doc_service.get_document_with_items(doc_id=doc.id)
 
@@ -126,4 +129,3 @@ async def approve_good_exit_approvals(
     # event_emitter.emit(OnApproveGoodsExitEvent,doc_id)
     #
     # return result
-

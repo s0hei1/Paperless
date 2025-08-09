@@ -7,13 +7,16 @@ class GoodsExitApprovalBase(BaseModel):
     user_id: int
     doc_id: int
 
+
 class GoodsExitApprovalCreate(GoodsExitApprovalBase):
     pass
+
 
 class GoodsExitApprovalUpdate(BaseModel):
     status: ApprovalStatus | None = None
     user_id: int | None = None
     doc_id: int | None = None
+
 
 class GoodsExitApprovalRead(GoodsExitApprovalBase):
     id: int
