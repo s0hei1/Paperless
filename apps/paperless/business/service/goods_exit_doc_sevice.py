@@ -96,5 +96,5 @@ class GoodsExitDocService:
         if approval_id is not None:
             if approval_id not in [i.id for i in approvals]:
                 raise LogicalException(
-                    f"there is no approvals with id {approval_id} for user id {user_id}}")
+                    f"there is no approvals with id {approval_id} for user id {user_id}")
 
