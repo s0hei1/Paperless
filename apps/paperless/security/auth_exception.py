@@ -1,2 +1,6 @@
 class AuthException(Exception):
-    message = "Auth Exception"
+    message: str
+
+    def __init__(self, message="Auth Exception"):
+        self.message = message
+
