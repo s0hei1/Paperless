@@ -1,6 +1,5 @@
 from fastapi import Request, HTTPException
 from fastapi.responses import JSONResponse
-
 from apps.paperless.business.exceptions import LogicalException
 from apps.paperless.business.schema.failure_schema import ErrorResponse, ErrorDetail
 from apps.paperless.security.auth_exception import AuthException
