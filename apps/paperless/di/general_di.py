@@ -1,8 +1,12 @@
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import FastAPI
 
 from apps.paperless.api.exception_handler.exception_handler import logical_exception_handler, auth_exception_handler
+from apps.paperless.api.middleware.request_limiter import CountryLimiterMiddleware
 from apps.paperless.business.exceptions import LogicalException
 from apps.paperless.config import Settings
+from apps.paperless.jobs.tasks import  SomeTask
 from apps.paperless.security.auth_exception import AuthException
 
 
@@ -30,8 +34,10 @@ class GeneralDI:
         fast_api_app.include_router(goods_exit_doc_router)
 
         fast_api_app.add_middleware(EventsMiddleware)
+        fast_api_app.add_middleware(CountryLimiterMiddleware)
 
         fast_api_app.add_exception_handler(LogicalException,logical_exception_handler)
         fast_api_app.add_exception_handler(AuthException,auth_exception_handler)
 
         return fast_api_app
+
