@@ -30,6 +30,5 @@ class RepositoryDI:
 
     @classmethod
     def good_exit_approval_repository(
-        cls, db=Depends(get_db)
-    ) -> GoodsExitApprovalRepository:
+        cls, db=Depends(get_db)) -> GoodsExitApprovalRepository:
         return GoodsExitApprovalRepository(db)
