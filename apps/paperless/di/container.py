@@ -1,4 +1,4 @@
-from dependency_injector import containers, providers
+from dependency_injector import containers
 from dependency_injector.providers import Factory,Singleton
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,9 +17,9 @@ from apps.paperless.data.repository.user_repository import UserRepository
 
 class Container(containers.DeclarativeContainer):
 
-    settings = providers.Singleton(Settings)
+    settings : Singleton[Settings] = Singleton(Settings)
 
-    app : Factory[FastAPI] = Factory(FastAPI)
+    app : Singleton[FastAPI] = Singleton(FastAPI)
 
     db : Factory[AsyncSession] = Factory(get_db)
     read_only_db : Factory[ReadOnlyAsyncSession] = Factory(get_read_only_db)
